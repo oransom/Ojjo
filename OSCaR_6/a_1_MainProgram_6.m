@@ -1,14 +1,14 @@
 tic
 warning ('off','all')
 %uncomment following two lines for ojjo
-% [FileName,PathName] = uigetfile('*.xlsx','Select the configuration file','MultiSelect','off'); %ojjo
-% fp_cat=strcat(PathName,FileName); %cat path and file ojjo
-% [const_all] = a_2_constants_config_6(fp_cat); % ojjo
+[FileName,PathName] = uigetfile('*.xlsx','Select the configuration file','MultiSelect','off'); %ojjo
+fp_cat=strcat(PathName,FileName); %cat path and file ojjo
+[const_all] = a_2_constants_config_6(fp_cat); % ojjo
 %config_file='/Users/osop/Documents/ORCaS/Osc6_testproj/AUI_MtPoso_rev9SitePlan_022224/Constants_V6.0.xlsx';
 %config_file='/Users/osop/Documents/ORCaS/Osc6_testproj/Dual String 1/Constants_V6.0.xlsx';
-config_file='/Users/osop/Documents/ORCaS/Osc6_testproj/Zone1/BF2.xlsx';
+%config_file='/Users/osop/Documents/ORCaS/Osc6_testproj/Zone1/BF2.xlsx';
 %config_file='/Users/osop/Documents/ORCaS/Osc6_testproj/TheRyanCo_AVI-Fairfield_022224_V2/AVI_6.0.xlsx';
-[const_all] = a_2_constants_config_6(config_file); %change to fp_cat for ojjo
+%[const_all] = a_2_constants_config_6(config_file); %change to fp_cat for ojjo
 for s=1:height(const_all.project)
     skips = [];
     if ~ismember(s,skips)
