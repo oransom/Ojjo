@@ -1,7 +1,8 @@
-function [surface] = ae_1_grading_6(const,surface,dpileh)
+
+function [surface, grading] = ae_1_grading_6(const,surface,dpileh)
 
 surface.graded=NaN(size(surface.zog));
-padsizex=0.6*const.xspacing;
+padsizex=0.3*const.xspacing;
 padsizey=15;
 
 cut=find(dpileh.cotth<const.min_wp); %table index for cut
@@ -65,6 +66,10 @@ if const.writesurf ==1
     writematrix(xyzg, append(const.gpath{1}, '/', 'fullsurf.csv'),'delimiter',',')
     writematrix(xyzo, append(const.gpath{1}, '/', 'eg_mat_surf.csv'),'delimiter',',')
 end
+
+grading.fill=sum(sum(surface.sdiff(surface.sdiff > 0)))*(const.bin_x*const.bin_y)/27; %fill
+grading.cut=abs(sum(sum(surface.sdiff(surface.sdiff < 0)))*(const.bin_x*const.bin_y)/27); %cut
+grading.area=(sum(sum(surface.sdiff>0))+abs(sum(sum(surface.sdiff<0))))*(const.bin_x*const.bin_y)/43560;
 
 surface.Fg=scatteredInterpolant(x,y,zg,'natural','none');
 

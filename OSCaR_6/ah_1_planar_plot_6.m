@@ -14,6 +14,11 @@ else
     cott=dpileh.cotth; % swappable
     pilerev=dpileh.pile_rev; %swappable
 end
+if any(contains(drowh.Properties.VariableNames,'slpc'))
+    slp=drowh.slpc;
+else
+    slp=drowh.slp;
+end
 %create RGB's for dat_bins
 for j=1:length(dat_bins.bin_color)
     if matches(string(dat_bins.bin_color(j)),"b")
@@ -114,23 +119,23 @@ NewPos = [Tight(1) Tight(2) 1-Tight(1)-Tight(3) 1-Tight(2)-Tight(4)]; %New plot 
 set(gca, 'Position', NewPos);
 
 %%GRADING EXTENT PLOTTER
-% if ~isempty(surface.gbound)
-%     for j=1:numel(surface.gbound)
-%         plot3(surface.xg{j}(surface.gbound{j}),...
-%               surface.yg{j}(surface.gbound{j}),...
-%               (ones(numel(surface.gbound{j}),1).*1000000),'k-','LineWidth',2)
-%         hold on
-%     end
-% end
 if ~isempty(surface.gbound)
     for j=1:numel(surface.gbound)
-        hx=patch('XData',surface.xg{j}(surface.gbound{j}),...
-                 'YData',surface.yg{j}(surface.gbound{j}),...
-                 'ZData',(ones(numel(surface.gbound{j}),1)*(max(cott)+10)),...
-                 'EdgeColor','k','LineWidth',1);
-        hatchfill2(hx,'cross','LineWidth',1,'FaceColor','none','HatchStyle','single','HatchAngle',135,'HatchDensity',300);
+        plot3(surface.xg{j}(surface.gbound{j}),...
+              surface.yg{j}(surface.gbound{j}),...
+              (ones(numel(surface.gbound{j}),1).*1000000),'k-','LineWidth',2)
+        hold on
     end
 end
+% if ~isempty(surface.gbound)
+%     for j=1:numel(surface.gbound)
+%         hx=patch('XData',surface.xg{j}(surface.gbound{j}),...
+%                  'YData',surface.yg{j}(surface.gbound{j}),...
+%                  'ZData',(ones(numel(surface.gbound{j}),1)*(max(cott)+10)),...
+%                  'EdgeColor','k','LineWidth',1);
+%         hatchfill2(hx,'cross','LineWidth',1,'FaceColor','none','HatchStyle','single','HatchAngle',135,'HatchDensity',300);
+%     end
+% end
 view(2)
 axis off
 xlim([min(minx)-50 max(maxx)+50])
@@ -265,6 +270,7 @@ if strcmpi(string(const.tracker),"NXT")==1 || contains(string(const.tracker),"XT
 else
     pbt = table(e1name,pbins',e2name,cbins','VariableNames',["Top Pile Height","Percentage","CoTT Height","Percentage "]);
 end
+plots.pbt=pbt;
 %%
 h1=histogram(cott,edges,'Normalization','probability');
 yl=(get(gca,'YLim'));
@@ -291,19 +297,19 @@ t=string(datetime("today"));
 switch char(const.tracker)
     case {'ATI'}
         ppt = Presentation(append(const.fpath{1}, '/', char(const.customer), '_' ,char(const.project),...
-            '_Eng_RPCS_Planar_', char(t), '.pptx'),'PPT/RPCS Planar Template - ATI.potx');
+            '_Eng_RPCS_Planar_', char(t), '_h.pptx'),'PPT/RPCS Planar Template - ATI.potx');
         fname=append(const.fpath{1}, '/', char(const.customer), '_' ,char(const.project),...
-            '_Eng_RPCS_Planar_', char(t), '.pptx');
+            '_Eng_RPCS_Planar_', char(t), '_h.pptx');
     case {'NXT','XTR','XTR1p5'}
         ppt = Presentation(append(const.fpath{1}, '/', char(const.customer), '_', char(const.project),...
-            '_Eng_RPCS_Planar_', char(t), '.pptx'),'PPT/RPCS Planar Template - NXT.potx');
+            '_Eng_RPCS_Planar_', char(t), '_h.pptx'),'PPT/RPCS Planar Template - NXT.potx');
         fname=append(const.fpath{1}, '/', char(const.customer), '_', char(const.project),...
-            '_Eng_RPCS_Planar_', char(t), '.pptx');
+            '_Eng_RPCS_Planar_', char(t), '_h.pptx');
     case {'NEV','Ojjo_ATI','Ojjo_NXT','FTC'}
         ppt = Presentation(append(const.fpath{1}, '/', char(const.customer), '_', char(const.project),...
-            '_Eng_Study_', char(t), '.pptx'),'PPT/PPT Template - NEV.potx');
+            '_Eng_Study_', char(t), '_h.pptx'),'PPT/PPT Template - NEV.potx');
         fname=append(const.fpath{1}, '/', char(const.customer), '_', char(const.project),...
-            '_Eng_Study_', char(t), '.pptx');        
+            '_Eng_Study_', char(t), '_h.pptx');        
 end
 open(ppt);
 
@@ -331,11 +337,11 @@ replace(ppt,'Histogram',HST)
 replace(ppt,'ColorBar',CLB)
 %max min slope
 formatSpec = ' APPROXIMATE MAX NORTH ROW SLOPE = %.1f%c \n APPROXIMATE MAX SOUTH ROW SLOPE = %.1f%c ';
-northslope=-min(drowh.slp(drowh.slp<0));
+northslope=-min(slp(slp<0));
 if isempty(northslope)==1
     northslope=0;
 end
-southslope=max(drowh.slp(drowh.slp>0));
+southslope=max(slp(slp>0));
 if isempty(southslope)==1
     southslope=0;
 end
@@ -440,14 +446,14 @@ else
 end
 close(ppt);
 
-plots.fhghtplot=append(const.fpath{1},'/heightplot.png');
+plots.fhghtplt=append(const.fpath{1},'/heightplot.png');
 plots.fhghthist=append(const.fpath{1},'/height_hist.png');
 plots.fheightcb=append(const.fpath{1},'/heightcolorbar.png');
 if ispc
-    pptview(planar.fname,'converttopdf')
-    plots.planar=strrep(fname,'pptx','pdf');
+    pptview(fname,'converttopdf')
+    plots.oplanar=strrep(fname,'pptx','pdf');
 else
-    plots.planar=fname;
+    plots.oplanar=fname;
 end
 end
 

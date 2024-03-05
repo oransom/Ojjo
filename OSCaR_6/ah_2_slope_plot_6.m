@@ -83,9 +83,9 @@ t=string(datetime("today"));
 pbt = table(string(tcut),string(tfill),string(tarea),'VariableNames',["Rows 0˚-4.0˚","Rows 4.0˚-8.0˚","Rows > 8.0˚"]);
 
 ppt = Presentation(append(const.fpath{1}, '/', char(const.customer), '_' ,char(const.project),...
-    '_ROW_SLOPE_', char(t), '.pptx'),'PPT/rowslope_fig.potx');
+    '_ROW_SLOPE_', char(t), '_h.pptx'),'PPT/rowslope_fig.potx');
 sname=append(const.fpath{1}, '/', char(const.customer), '_' ,char(const.project),...
-    '_ROW_SLOPE_', char(t), '.pptx');
+    '_ROW_SLOPE_', char(t), '_h.pptx');
 open(ppt);
 PMN=Picture(append(const.fpath{1},'/rowslope_plot.png'));
 replace(ppt,'PlanarMain',PMN)
@@ -177,12 +177,12 @@ for j=2:size(pbt,1)
 end
 replace(ppt,'PileTable',PileTable)
 close(ppt);
-plots.fslpplot=append(const.fpath{1},'/rowslope_plot.png');
+plots.fslpplt=append(const.fpath{1},'/rowslope_plot.png');
 if ispc
     pptview(sname,'converttopdf')
-    plots.slope=strrep(sname,'pptx','pdf');
+    plots.oslope=strrep(sname,'pptx','pdf');
 else
-    plots.slope=sname;
+    plots.oslope=sname;
 end
 
 

@@ -95,8 +95,8 @@ t=string(datetime("today"));
 
 pbt = table(string(wega),string(wegv),'VariableNames',["Graded Area (Acres)","Cut (CY)"]);
 ppt = Presentation(append(const.fpath{1}, '/', char(const.customer), '_', char(const.project),...
-    '_EAST_EDGE_INTER_', char(t), '.pptx'),'PPT/edge_fig.potx');
-eename=(append(const.fpath{1}, '/', char(const.customer), '_', char(const.project), '_EAST_EDGE_INTER_', char(t), '.pptx'));
+    '_EAST_EDGE_INTER_', char(t), '_h.pptx'),'PPT/edge_fig.potx');
+eename=(append(const.fpath{1}, '/', char(const.customer), '_', char(const.project), '_EAST_EDGE_INTER_', char(t), '_h.pptx'));
 open(ppt);
 PMN=Picture(append(const.fpath{1},'/eastedge.png'));
 replace(ppt,'PlanarMain',PMN)
@@ -238,8 +238,8 @@ t=string(datetime("today"));
 
 pbt = table(string(wega),string(wegv),'VariableNames',["Graded Area (Acres)","Cut (CY)"]);
 ppt = Presentation(append(const.fpath{1}, '/', char(const.customer), '_', char(const.project),...
-    '_WEST_EDGE_INTER_', char(t), '.pptx'),'PPT/edge_fig.potx');
-wename=(append(const.fpath{1}, '/', char(const.customer), '_', char(const.project), '_WEST_EDGE_INTER_', char(t), '.pptx'));
+    '_WEST_EDGE_INTER_', char(t), '_h.pptx'),'PPT/edge_fig.potx');
+wename=(append(const.fpath{1}, '/', char(const.customer), '_', char(const.project), '_WEST_EDGE_INTER_', char(t), '_h.pptx'));
 open(ppt);
 PMN=Picture(append(const.fpath{1},'/westedge.png'));
 replace(ppt,'PlanarMain',PMN)
@@ -317,12 +317,12 @@ plots.fwestedge=append(const.fpath{1},'/westedge.png');
 plots.feastedge=append(const.fpath{1},'/eastedge.png');
 if ispc
     pptview(wename,'converttopdf')
-    plots.wename=strrep(wename,'pptx','pdf');
+    plots.owe=strrep(wename,'pptx','pdf');
     pptview(eename,'converttopdf')
-    plots.eename=strrep(eename,'pptx','pdf');
+    plots.oee=strrep(eename,'pptx','pdf');
 else
-    plots.wename=wename;
-    plots.eename=eename;
+    plots.owe=wename;
+    plots.oee=eename;
 end
 end
 

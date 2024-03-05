@@ -95,7 +95,5 @@ for j=1:length(lfout.westleg)
 end
 lfout=struct2table(lfout);
 writetable(lfout,append(const.dpath{1},'/legtable_postgrade.xlsx'))
-writetable(dpileh,append(const.dpath{1},'/Pile_Data_All.xlsx'))
-writetable(drowh,append(const.dpath{1},'/Row_Data_All.xlsx'))
 
 end

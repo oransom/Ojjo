@@ -53,12 +53,12 @@ t=string(datetime("today"));
 pbt = table(string(tcut),string(tfill),string(tarea),'VariableNames',["Cut (CY)","Fill (CY)","Disturbed Area (Acres)"]);
 if contains(const.tracker,'XTR','IgnoreCase',true)
     ppt = Presentation(append(const.fpath{1}, '/', char(const.customer), '_', char(const.project),...
-        '_GRADING_ESTIMATES_', char(t), '.pptx'),'PPT/grading_figxtr.potx');
+        '_GRADING_ESTIMATES_', char(t), '_h.pptx'),'PPT/grading_figxtr.potx');
 else
     ppt = Presentation(append(const.fpath{1}, '/', char(const.customer), '_', char(const.project),...
-        '_GRADING_ESTIMATES_', char(t), '.pptx'),'PPT/grading_fig.potx');
+        '_GRADING_ESTIMATES_', char(t), '_h.pptx'),'PPT/grading_fig.potx');
 end
-gname=(append(const.fpath{1}, '/', char(const.customer), '_', char(const.project), '_GRADING_ESTIMATES_', char(t), '.pptx'));
+gname=(append(const.fpath{1}, '/', char(const.customer), '_', char(const.project), '_GRADING_ESTIMATES_', char(t), '_h.pptx'));
 open(ppt);
 PMN=Picture(append(const.fpath{1},'/cutandfill.png'));
 replace(ppt,'PlanarMain',PMN)
@@ -135,9 +135,9 @@ close(ppt);
 plots.fgrding=append(const.fpath{1},'/cutandfill.png');
 if ispc
     pptview(gname,'converttopdf')
-    plots.grading=strrep(gname,'pptx','pdf');
+    plots.ograding=strrep(gname,'pptx','pdf');
 else
-    plots.grading=gname;
+    plots.ograding=gname;
 end
 
 end
