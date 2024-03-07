@@ -143,40 +143,40 @@ ylim([min(miny)-50 max(maxy)+50])
 
 %FLIPEX
 if strcmpi('flip2ext',drowh.Properties.VariableNames)
-box_x=xpdim/304.8+.5;
-flipex.tpxc=drowh.mdptx(drowh.flip2ext==1);
-flipex.tpyc=drowh.mdpty(drowh.flip2ext==1);
-flipex.tpzc=drowh.rowzavg(drowh.flip2ext==1);
-flipex.row_len=drowh.rlengthc(drowh.flip2ext==1);
+    box_x=xpdim/304.8+.5;
+    flipex.tpxc=drowh.mdptx(drowh.flip2ext==1);
+    flipex.tpyc=drowh.mdpty(drowh.flip2ext==1);
+    flipex.tpzc=drowh.rowzavg(drowh.flip2ext==1)+500;
+    flipex.row_len=drowh.rlengthc(drowh.flip2ext==1);
 
-if matches(string(const.tracker),"NXT") || contains(string(const.tracker),"XTR",'IgnoreCase',true)==1
-    fliped.tpxc=drowh.mdptx(drowh.flip2edg==1);
-    fliped.tpyc=drowh.mdpty(drowh.flip2edg==1);
-    fliped.tpzc=drowh.rowzavg(drowh.flip2edg==1);
-    fliped.row_len=drowh.rlengthc(drowh.flip2edg==1);
-    for j=1:length(fliped.tpxc)
-        box_y=fliped.row_len(j)/2+2;
-        P = [fliped.tpxc(j)-box_x fliped.tpyc(j)-box_y fliped.tpzc(j); fliped.tpxc(j)-box_x fliped.tpyc(j)+box_y fliped.tpzc(j);...
-            fliped.tpxc(j)+box_x fliped.tpyc(j)+box_y fliped.tpzc(j); fliped.tpxc(j)+box_x fliped.tpyc(j)-box_y fliped.tpzc(j);...
-            fliped.tpxc(j)-box_x fliped.tpyc(j)-box_y fliped.tpzc(j)];
-        plot3(P(:,1),P(:,2),P(:,3),'r--', 'linewidth',1.5)
+    if matches(string(const.tracker),"NXT") || contains(string(const.tracker),"XTR",'IgnoreCase',true)==1
+        fliped.tpxc=drowh.mdptx(drowh.flip2edg==1);
+        fliped.tpyc=drowh.mdpty(drowh.flip2edg==1);
+        fliped.tpzc=drowh.rowzavg(drowh.flip2edg==1);
+        fliped.row_len=drowh.rlengthc(drowh.flip2edg==1);
+        for j=1:length(fliped.tpxc)
+            box_y=fliped.row_len(j)/2+2;
+            P = [fliped.tpxc(j)-box_x fliped.tpyc(j)-box_y fliped.tpzc(j); fliped.tpxc(j)-box_x fliped.tpyc(j)+box_y fliped.tpzc(j);...
+                fliped.tpxc(j)+box_x fliped.tpyc(j)+box_y fliped.tpzc(j); fliped.tpxc(j)+box_x fliped.tpyc(j)-box_y fliped.tpzc(j);...
+                fliped.tpxc(j)-box_x fliped.tpyc(j)-box_y fliped.tpzc(j)];
+            plot3(P(:,1),P(:,2),P(:,3),'r--', 'linewidth',1.5)
+        end
+        for j=1:length(flipex.tpxc)
+            box_y=flipex.row_len(j)/2+2;
+            P = [flipex.tpxc(j)-box_x flipex.tpyc(j)-box_y flipex.tpzc(j); flipex.tpxc(j)-box_x flipex.tpyc(j)+box_y flipex.tpzc(j);...
+                flipex.tpxc(j)+box_x flipex.tpyc(j)+box_y flipex.tpzc(j); flipex.tpxc(j)+box_x flipex.tpyc(j)-box_y flipex.tpzc(j);...
+                flipex.tpxc(j)-box_x flipex.tpyc(j)-box_y flipex.tpzc(j)];
+            plot3(P(:,1),P(:,2),P(:,3),'r-', 'linewidth',1.5)
+        end
+    else
+        for j=1:length(flipex.tpxc)
+            box_y=flipex.row_len(j)/2+2;
+            P = [flipex.tpxc(j)-box_x flipex.tpyc(j)-box_y flipex.tpzc(j); flipex.tpxc(j)-box_x flipex.tpyc(j)+box_y flipex.tpzc(j);...
+                flipex.tpxc(j)+box_x flipex.tpyc(j)+box_y flipex.tpzc(j); flipex.tpxc(j)+box_x flipex.tpyc(j)-box_y flipex.tpzc(j);...
+                flipex.tpxc(j)-box_x flipex.tpyc(j)-box_y flipex.tpzc(j)];
+            plot3(P(:,1),P(:,2),P(:,3),'r-', 'linewidth',1.5)
+        end
     end
-    for j=1:length(flipex.tpxc)
-        box_y=flipex.row_len(j)/2+2;
-        P = [flipex.tpxc(j)-box_x flipex.tpyc(j)-box_y flipex.tpzc(j); flipex.tpxc(j)-box_x flipex.tpyc(j)+box_y flipex.tpzc(j);...
-            flipex.tpxc(j)+box_x flipex.tpyc(j)+box_y flipex.tpzc(j); flipex.tpxc(j)+box_x flipex.tpyc(j)-box_y flipex.tpzc(j);...
-            flipex.tpxc(j)-box_x flipex.tpyc(j)-box_y flipex.tpzc(j)];
-        plot3(P(:,1),P(:,2),P(:,3),'r-', 'linewidth',1.5)
-    end
-else
-    for j=1:length(flipex.tpxc)
-        box_y=flipex.row_len(j)/2+2;
-        P = [flipex.tpxc(j)-box_x flipex.tpyc(j)-box_y flipex.tpzc(j); flipex.tpxc(j)-box_x flipex.tpyc(j)+box_y flipex.tpzc(j);...
-            flipex.tpxc(j)+box_x flipex.tpyc(j)+box_y flipex.tpzc(j); flipex.tpxc(j)+box_x flipex.tpyc(j)-box_y flipex.tpzc(j);...
-            flipex.tpxc(j)-box_x flipex.tpyc(j)-box_y flipex.tpzc(j)];
-        plot3(P(:,1),P(:,2),P(:,3),'r-', 'linewidth',1.5)
-    end
-end
 end
 
 %% FLOODPLOT
@@ -317,7 +317,7 @@ PMN=Picture(append(const.fpath{1},'/heightplot.png'));
 HST=Picture(append(const.fpath{1},'/height_hist.png'));
 CLB=Picture(append(const.fpath{1},'/heightcolorbar.png'));
 FLP=Picture('PPT/flipex.png');
-if strcmpi('flip2ext',drowh.Properties.VariableNames)
+if sum(strcmpi(drowh.Properties.VariableNames,'flip2ext'))>0
     if sum(drowh.flip2ext)>0
         replace(ppt,'Flipex',FLP)
     end

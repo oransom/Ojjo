@@ -14,15 +14,10 @@ fp_cat=strcat(PathName,FileName); %cat path and file ojjo
 for s=1:height(const_all.project)
     skips = [];
     if ~ismember(s,skips)
-        fprintf('*************************************************** \n');
+        fprintf('*************************************************** \n');                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
         fprintf('*******************~~~OSCaR6.0~~~****************** \n');
         fprintf('%s \n',string(const_all.project(s)));
-        clearvars -except config_file s const_all %surface
-        % if s>1
-        %     if ~matches(string(const_all.topo(s)),string(const_all.topo(s-1)))
-        %         clear surface
-        %     end
-        % end
+        clearvars -except config_file s const_all surface
         close all
         const=const_all(s,:); %make sure you check hard coded consts below
         if ~contains(const.tracker,'Ojjo') %ojjo lock

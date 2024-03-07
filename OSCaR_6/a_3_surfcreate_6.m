@@ -10,7 +10,7 @@ if ~strcmpi(const.flood,'na') & ~isnumeric(const.flood) %if there is a flood lay
     flood=readtable(string(const.flood));  %read in the flood layer
     surface.Flood_s=scatteredInterpolant(flood.Var1,flood.Var2,flood.Var3,'natural','none'); %create the flood surface
     surface.flood=surface.Flood_s(surface.xq,surface.yq); %sample the flood surface on the same grid as the topo
-    surface.flood(surface.flood<surface.zog+0.01)=surface.zog(surface.flood<surface.zog+0.01); %any flood element that is below surface element becomes surface element
+    surface.flood(surface.flood<surface.zog+0.01)=NaN;%surface.zog(surface.flood<surface.zog+0.01); %any flood element that is below surface element becomes surface element
     if isequal(surface.flood,surface.zog) %if entirety of flood surface is below surface, we assume it's a flood depth layer
         surface.flood(surface.flood<0.01)=0; %close to zero cells become zero
         surface.flood=surface.zog+surface.flood; %flood surface is added to surface

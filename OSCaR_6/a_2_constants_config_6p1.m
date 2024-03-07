@@ -42,18 +42,25 @@ for k=1:height(const)
     % end
     % if k==1
     %% FLOOD
-    fpflood = append(folderpath,"/flood/");
-        if isfolder(fpflood)
-        filelist   = dir(fpflood);
-        fls        = struct2table(filelist); %make the file list easily sortable
-        name       = fls.name;
-        ts         = fls.datenum; 
-        pat        =[".csv", ".xlsx"];
-        name       = name(endsWith(name, pat, 'IgnoreCase',true));   % csv or xlsx files
-        nidx       = find(contains(fls.name,name)&(ts==max(ts(contains(fls.name,name)))));
-        name       = fls.name(nidx,1);
-        const.flood{k}=append(fpflood,char(name));
+    if ~strcmp(const.flood{k},'na')
+        if isnumeric(const.flood{k})
+            const.flood{k}=const.flood{k};
         end
+        if strcmp(const.flood{k},'proj_folder')
+            fpflood = append(folderpath,"/flood/");
+            if isfolder(fpflood)
+                filelist   = dir(fpflood);
+                fls        = struct2table(filelist); %make the file list easily sortable
+                name       = fls.name;
+                ts         = fls.datenum;
+                pat        =[".csv", ".xlsx"];
+                name       = name(endsWith(name, pat, 'IgnoreCase',true));   % csv or xlsx files
+                nidx       = find(contains(fls.name,name)&(ts==max(ts(contains(fls.name,name)))));
+                name       = fls.name(nidx,1);
+                const.flood{k}=append(fpflood,char(name));
+            end
+        end
+    end
 
     %% TOPO
         fptopo = append(folderpath,"/Topo/");

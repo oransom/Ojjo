@@ -72,5 +72,6 @@ grading.cut=abs(sum(sum(surface.sdiff(surface.sdiff < 0)))*(const.bin_x*const.bi
 grading.area=(sum(sum(surface.sdiff>0))+abs(sum(sum(surface.sdiff<0))))*(const.bin_x*const.bin_y)/43560;
 
 surface.Fg=scatteredInterpolant(x,y,zg,'natural','none');
+dpileh.cottpg_check=dpileh.tpzc-surface.Fg(dpileh.tpxc,dpileh.tpyc);
 
 end

@@ -20,6 +20,7 @@ switch char(const.rsolve)
             rhld.npz=drow.nbf_npz+const.min_wp;
         end
 end
+drow = removevars(drow,{'lbf_npz','lbf_spz','nbf_npz','nbf_spz'});
 %find unit vector from first to last pile
 uv=(rhld.pf-rhld.pi)./vecnorm(rhld.pf-rhld.pi,2,2); %unit vector for any of the straight tt sol's above
 dpile.FFR=zeros(numel(dpile.tpx),1); %FLAG FOR REVIEW PILE
@@ -35,7 +36,7 @@ for i=1:height(drow)
         dpile.tpzc(j)=rhld.npz(i)-span.*uv(i,3); %z portion of unit vector
     end
 end
-clear span uv
+clear span uv rhld
 for i=1:height(drow) %calculate slope - negative slope faces north
     drow.slp(i)=atand((dpile.tpzc(drow.ei(i))-dpile.tpzc(drow.si(i)))/...
         (dpile.tpyc(drow.ei(i))-dpile.tpyc(drow.si(i))));
@@ -46,15 +47,9 @@ end
 %drow.slp is overwritten, but np/sp values in drow are not - will be
 %cleaned up after this function
 if const.slopelimit==1
-    [slp, id] = ab_2_plc_slplimit_6(const,drow,dpile);
-    dpile.tpzc=slp.tpx;
-    dpile.tpyc=slp.tpy;
-    dpile.tpzc=slp.tpz;
-    drow.slpc=drow.slp; %corrected slope
-    for i=1:numel(id)
-        drow.slpc(id)=slp.scheck(i); %kind of a shitty way to do this, but it works
-    end
-    clear slp id %clean some vars up
+    [drow, dpile] = ab_2_plc_slplimit_6p1(const,drow,dpile);
+else
+    drow.slpc=drow.slp;
 end
 
 switch char(const.rsolve)
@@ -73,39 +68,53 @@ switch char(const.rsolve)
         %do not change the initial best fit solution
 end
 
+%ns align should occur here, after rows are moved above
+if const.nsfit==1
+    [drow, dpile] = ab_6_plc_nsfit_6p1(const,dpile,drow,surface);
+end
+
+%% Flood calcs
 if ~strcmpi(const.flood,'na') %flood surface should always be above ground surface
     fld2grd=surface.Flood_s(dpile.tpxc,dpile.tpyc)-surface.F_og(dpile.tpxc,dpile.tpyc);
     fld2grd(fld2grd<0.01)=0;
     cottd=const.min_wp-const.freeboard; %if wp is above freeboard it'll be positive
-    phld.fh=dpile.tpzc-surface.Flood_s(dpile.tpxc,dpile.tpyc);
+    phld.fh=dpile.tpzc-surface.Flood_s(dpile.tpxc,dpile.tpyc); %top of pile z to flood surface 
     for i=1:height(drow) %ensure that no pile is less than minimum required pile
         j=drow.si(i):drow.ei(i);
         tpzcf=surface.Flood_s(dpile.tpxc(drow.si(i)-1+find(fld2grd(j)>0)),dpile.tpyc(drow.si(i)-1+find(fld2grd(j)>0)))+const.freeboard; %find wet top of pile in row
         tpzd=tpzcf-dpile.tpzc(drow.si(i)-1+find(fld2grd(j)>0));
+        %minfchk(i,1)=const.freeboard-min(dpile.tpzc(j)-surface.Flood_s(dpile.tpxc(j),dpile.tpyc(j)));%trying to sort out an error
         if max(tpzd)>0
             rhld.fadd(i,1)=max(tpzd(tpzd>=0));
         else
-            rhld.fadd(i,1)=0;
+            rhld.fadd(i,1)=0;     
         end
         dpile.tpzc(j)=dpile.tpzc(j)+rhld.fadd(i);
         dpile.matpzc(j)=dpile.tpzc(j)-surface.F_og(dpile.tpxc(j),dpile.tpyc(j)); %minimum allowable tpzc
     end
+    drow.ntpxc=dpile.tpxc(drow.si); %northern tpx corrected
+    drow.stpxc=dpile.tpxc(drow.ei); %southern tpx corrected
+    drow.ntpyc=dpile.tpyc(drow.si); %northern tpy corrected
+    drow.stpyc=dpile.tpyc(drow.ei); %southern tpy corrected
+    drow.ntpzc=dpile.tpzc(drow.si); %northern selected tpz corrected
+    drow.stpzc=dpile.tpzc(drow.ei); %southern selected tpz corrected
 else
     %tpzc is unchanged since no flood
+    drow.ntpxc=dpile.tpxc(drow.si); %northern tpx corrected
+    drow.stpxc=dpile.tpxc(drow.ei); %southern tpx corrected
+    drow.ntpyc=dpile.tpyc(drow.si); %northern tpy corrected
+    drow.stpyc=dpile.tpyc(drow.ei); %southern tpy corrected
+    drow.ntpzc=dpile.tpzc(drow.si); %northern selected tpz corrected
+    drow.stpzc=dpile.tpzc(drow.ei); %southern selected tpz corrected
 end
+
 dpile.bpzc=surface.F_og(dpile.tpxc,dpile.tpyc);
-for i=1:height(drow) %ensure that no pile is less than minimum required pile
+for i=1:height(drow) %calculate how much you can move each row up - for flipex calcs later
     j=drow.si(i):drow.ei(i);
     drow.prmng(i)=const.max_wp-max(dpile.tpzc(j)-dpile.bpzc(j));
 end
 clear phld rhld i j
-%need to inject pile info back into rows, and clean up all tables
-drow.ntpxc=dpile.tpxc(drow.si); %northern tpx corrected
-drow.stpxc=dpile.tpxc(drow.ei); %southern tpx corrected
-drow.ntpyc=dpile.tpyc(drow.si); %northern tpy corrected
-drow.stpyc=dpile.tpyc(drow.ei); %southern tpy corrected
-drow.ntpzc=dpile.tpzc(drow.si); %northern selected tpz corrected
-drow.stpzc=dpile.tpzc(drow.ei); %southern selected tpz corrected
+
 for i=1:height(drow)
     drow.rowzavg(i)=mean(dpile.tpzc(drow.si(i):drow.ei(i)));
 end
@@ -142,9 +151,9 @@ if const.flipex==1 %flip rows to exterior based on ATI and NXT best doc
             drow.flip2edg(drow.flip2ext==1)=0;
     end
 end
-%%clean and arrange table
 
-drow = removevars(drow,{'spyc','spzc','lbf_npz','lbf_spz','nbf_npz','nbf_spz'});
+%%clean and arrange table
+drow = removevars(drow,{'spyc','spzc'});
 drow = movevars(drow, "block", "Before", "npx");
 drow = movevars(drow, "sect", "Before", "npx");
 drow = movevars(drow, "row", "Before", "npx");
@@ -156,11 +165,6 @@ drow = movevars(drow, "npz", "Before", "mpy");
 drow = movevars(drow, "mdptx", "Before", "mpy");
 drow = movevars(drow, "mdpty", "Before", "mpy");
 drow = movevars(drow, "spz", "Before", "nnw");
-
-%ns align should occur here, after rows are moved above
-if const.nsfit==1
-    [drow, dpile] = ab_6_plc_nsfit_6(const,dpile,drow,surface);
-end
 
 %align motors
 if const.motorc==1 %tpyc2 is motor adjusted - if selected, assume z doesn't shift - maybe an issue?

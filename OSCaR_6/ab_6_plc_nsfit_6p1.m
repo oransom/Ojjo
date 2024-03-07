@@ -1,4 +1,4 @@
-function [drowh, dpileh] = ab_6_plc_nsfit_6(const,dpileh,drowh,surface)
+function [drowh, dpileh] = ab_6_plc_nsfit_6p1(const,dpileh,drowh,surface)
 %this function only moves the end of the effected rows, so x/y/z of the
 %whole row are effected
 %update all of drowh and then suck it back into drow in plc_sst;
